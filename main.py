@@ -3,7 +3,6 @@ import logging
 import os
 import threading
 import socket
-from aiohttp import web
 
 import betterlogging as bl
 from aiogram import Bot, Dispatcher
@@ -18,31 +17,15 @@ from src.handlers import router_list
 from src.utils.set_bot_commands import set_default_commands
 from src.services import broadcaster
 from src.loader import db
-from aiogram.webhook.aiohttp_server import SimpleRequestHandler, setup_application
 
 # async def on_startup(dispatcher):
 #     await set_default_commands(dispatcher)
 #
 #     await on_startup_notify(dispatcher)
 
-WEB_SERVER_HOST = "127.0.0.1"
-# Port for incoming request from reverse proxy. Should be any available port
-WEB_SERVER_PORT = 8080
-
-# Path to webhook route, on which Telegram will send requests
-WEBHOOK_PATH = "/webhook"
-# Secret key to validate requests from Telegram (optional)
-WEBHOOK_SECRET = "my-secret"
-# Base URL for webhook will be used to generate webhook URL for Telegram,
-# in this example it is used public DNS with HTTPS support
-BASE_WEBHOOK_URL = "https://bot.metabio.uz"
-
 async def on_startup(bot: Bot, admin_ids: list[int]):
     await set_default_commands(bot)
     await broadcaster.broadcast(bot, admin_ids, "Bot ishga tushdi")
-
-async def on_webhook_startup(bot: Bot):
-    await bot.set_webhook(f"{BASE_WEBHOOK_URL}{WEBHOOK_PATH}", secret_token=WEBHOOK_SECRET)
 
 
 def register_global_middlewares(bot: Bot, dp: Dispatcher, config: Config, session_pool=None):
@@ -111,26 +94,12 @@ async def main():
     bot = Bot(token=config.tg_bot.token, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
     dp = Dispatcher(storage=storage)
     dp.include_routers(*router_list)
-    dp.startup.register(on_webhook_startup)
 
     register_global_middlewares(bot, dp, config)
     
 
     await on_startup(bot, config.tg_bot.admin_ids)
-    
-    app = web.Application()
-
-
-    webhook_requests_handler = SimpleRequestHandler(
-        dispatcher=dp,
-        bot=bot,
-        secret_token=WEBHOOK_SECRET,
-    )
-
-    webhook_requests_handler.register(app, path=WEBHOOK_PATH)
-
-    setup_application(app, dp, bot=bot)
-    web.run_app(app, host=WEB_SERVER_HOST, port=WEB_SERVER_PORT)
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
