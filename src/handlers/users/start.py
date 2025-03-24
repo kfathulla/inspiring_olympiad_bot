@@ -1,51 +1,44 @@
+import logging
 import uuid
 
-from aiogram import types
-from aiogram.dispatcher.filters.builtin import CommandStart
+from aiogram import Router, F, Bot
+from aiogram.fsm.context import FSMContext
+from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
+from aiogram.filters import CommandStart
 
-from src.config.config import CHANNELS, ADMINS
-from src.filters import PrivateFilter
+from src.config import Config
+from src.filters.private_chat_filter import PrivateFilter
 from src.keyboards.default.menu_keyboards import menu_keyboards
-from src.loader import dp, bot, services
-from src.models.users import User, UserFilter
-from src.utils.misc import subscription
+from src.utils.misc import subscription 
+from src.loader import db
+from src.states.registr_form import RegistrFormState
 
+start_router = Router()
 
-@dp.message_handler(PrivateFilter(), CommandStart(), state=None)
-async def start(message: types.Message):
-    try:
-        user = User()
-        user.first_name = message.from_user.first_name
-        user.last_name = message.from_user.last_name
-        user.username = message.from_user.username or uuid.uuid4().__str__()
-        user.telegram_id = message.from_user.id
+@start_router.message(PrivateFilter(), CommandStart())
+async def user_start(message: Message, state: FSMContext, bot: Bot):
+    try:     
+        user = await db.select_user(telegram_id=message.chat.id)
+        if user is None:                
+            await db.add_user(
+                f"{message.from_user.first_name} {message.from_user.last_name}", 
+                message.from_user.username or uuid.uuid4().__str__(),
+                message.chat.id)
 
-        user = await services.user_service.add_or_update_user(user)
-
-        users = await services.user_service.get_all_users(user_filter=UserFilter(updated_datetime_from=None,
-                                                                                 updated_datetime_to=None))
-
-        await message.answer(text="Pastdan oʻzingizga kerakli boʻlimni tanlang", reply_markup=menu_keyboards)
-
-        msg = f"{user.__dict__} bazaga qo'shildi.\nBazada {users.total_count} ta foydalanuvchi bor."
-        for admin in ADMINS:
-            await bot.send_message(chat_id=admin, text=msg)
+        if user['is_registered'] == True:
+            await message.answer(text="👋 Botga hush kelibsiz!\nQuyidagi o'zingizga kerakli tugmani bosing", reply_markup=menu_keyboards)
+        else:
+            await state.set_state(RegistrFormState.Fullname)
+            await message.answer(text="Iltimos to'liq ismingizni kiriting.", reply_markup=ReplyKeyboardRemove())
     except Exception as ex:
-        print(ex)
+        logging.error(ex)
 
 
-@dp.callback_query_handler(text="check_subs")
-async def check_subs(call: types.CallbackQuery):
+@start_router.callback_query(PrivateFilter(), F.data == "check_subs")
+async def check_subs(call: CallbackQuery, bot: Bot, config: Config):
     await call.answer()
     result = str()
-    for channel in CHANNELS:
-        status = await subscription.check(user_id=call.from_user.id, channel=channel)
-        channel = await bot.get_chat(channel)
-        if status:
-            result += f"✔ <b>{channel.title}</b> kanaliga obuna bo'lgansiz! \n\n"
-        else:
-            invite_link = await channel.export_invite_link()
-            result += (f"❌️<b>{channel.title}</b> kanaliga obuna bo'lmagansiz. "
-                       f"<a href='{invite_link}'>Obuna bo'ling</a> \n\n")
-
-    await call.message.answer(result, disable_web_page_preview=True)
+    for channel in config.misc.channel_ids:
+        status = await subscription.check(bot, user_id=call.from_user.id, channel=channel)
+    if status:
+        await call.message.delete()

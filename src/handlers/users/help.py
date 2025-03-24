@@ -1,12 +1,13 @@
-from aiogram import types
-from aiogram.dispatcher.filters.builtin import CommandHelp
+from aiogram.types import Message
+from aiogram.filters import Command
+from aiogram import Router, F, Bot
+from src.filters.private_chat_filter import PrivateFilter
 
-from src.filters import PrivateFilter
-from src.loader import dp
 
+help_router = Router()
 
-@dp.message_handler(PrivateFilter(), CommandHelp())
-async def bot_help(message: types.Message):
+@help_router.message(PrivateFilter(), Command("help"))
+async def bot_help(message: Message):
     text = ("Buyruqlar: ",
             "/start - Botni ishga tushirish",
             "/help - Yordam")

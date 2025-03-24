@@ -1,7 +1,11 @@
-from aiogram import types
-from aiogram.dispatcher.filters import BoundFilter
+from typing import Union
+
+from aiogram.enums.chat_type import ChatType
+from aiogram.filters import BaseFilter
+from aiogram.types import Message, CallbackQuery
 
 
-class PrivateFilter(BoundFilter):
-    async def check(self, message: types.Message) -> bool:
-        return message.chat.type == types.ChatType.PRIVATE
+class PrivateFilter(BaseFilter):
+    async def __call__(self, message: Union[Message, CallbackQuery]) -> bool:
+        chat_type = message.chat.type if isinstance(message, Message) else message.message.chat.type
+        return chat_type == ChatType.PRIVATE

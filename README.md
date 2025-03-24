@@ -1,2 +1,2 @@
-# python_telegram_bot_template
-python_telegram_bot_template
+# hasantuyliyev_bot
+hasantuyliyev_bot
