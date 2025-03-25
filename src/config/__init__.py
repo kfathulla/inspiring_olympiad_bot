@@ -89,6 +89,9 @@ class TgBot:
     token: str
     admin_ids: list[int]
     use_redis: bool
+    webhook_url: str
+    webhook_server_host: str
+    webhook_server_port: int
 
     @staticmethod
     def from_env(env: Env):
@@ -98,7 +101,10 @@ class TgBot:
         token = env.str("BOT_TOKEN")
         admin_ids = env.list("ADMINS", subcast=int)
         use_redis = env.bool("USE_REDIS")
-        return TgBot(token=token, admin_ids=admin_ids, use_redis=use_redis)
+        webhook_url = env.str("WEBHOOK_URL")
+        webhook_server_host = env.str("WEBHOOK_SERVER_HOST")
+        webhook_server_port = env.int("WEBHOOK_SERVER_PORT")
+        return TgBot(token=token, admin_ids=admin_ids, use_redis=use_redis, webhook_url=webhook_url, webhook_server_host=webhook_server_host, webhook_server_port=webhook_server_port)
 
 
 @dataclass
@@ -146,15 +152,11 @@ class RedisConfig:
 @dataclass
 class Miscellaneous:
     channel_ids: list[int]
-    group_id: int
-    owner: str
 
     @staticmethod
     def from_env(env: Env):
         channel_ids = env.list("CHANNELS", subcast=int)
-        group_id = env.int("GROUP")
-        owner = env.str("OWNER")
-        return Miscellaneous(channel_ids=channel_ids, group_id=group_id, owner=owner)
+        return Miscellaneous(channel_ids=channel_ids)
 
 
 @dataclass
