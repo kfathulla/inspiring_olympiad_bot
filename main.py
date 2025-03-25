@@ -1,8 +1,5 @@
 import asyncio
 import logging
-import os
-import threading
-import socket
 
 import betterlogging as bl
 from aiogram import Bot, Dispatcher
@@ -10,13 +7,14 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 
+from src.database.setup import create_session_pool, create_engine
 from src.middlewares.check_subscription import CheckSubscriptionMiddleware
+from src.middlewares.database import DatabaseMiddleware
 from src.middlewares.config import ConfigMiddleware
 from src.config import load_config, Config
 from src.handlers import router_list
 from src.utils.set_bot_commands import set_default_commands
 from src.services import broadcaster
-from src.loader import db
 
 # async def on_startup(dispatcher):
 #     await set_default_commands(dispatcher)
@@ -41,7 +39,7 @@ def register_global_middlewares(bot: Bot, dp: Dispatcher, config: Config, sessio
     """
     middleware_types = [
         ConfigMiddleware(config),
-        # DatabaseMiddleware(session_pool),
+        DatabaseMiddleware(session_pool),
     ]
 
     for middleware_type in middleware_types:
@@ -80,12 +78,6 @@ def setup_logging():
 
 async def main():
     setup_logging()
-
-    try:
-        await db.create()
-        await db.create_table_users()
-    except Exception as ex:
-        print(ex)
         
     config = load_config(".env")
     storage = MemoryStorage()
@@ -95,7 +87,9 @@ async def main():
     dp = Dispatcher(storage=storage)
     dp.include_routers(*router_list)
 
-    register_global_middlewares(bot, dp, config)
+    engine = create_engine(config.db)
+    session_pool = create_session_pool(engine)
+    register_global_middlewares(bot, dp, config, session_pool)
     
 
     await on_startup(bot, config.tg_bot.admin_ids)

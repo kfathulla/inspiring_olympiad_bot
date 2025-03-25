@@ -3,7 +3,7 @@ from typing import Callable, Dict, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import Message
 
-from src.infrastructure.database.repo.requests import RequestsRepo
+from src.database.repo.requests import RequestsRepo
 
 
 class DatabaseMiddleware(BaseMiddleware):
@@ -22,6 +22,7 @@ class DatabaseMiddleware(BaseMiddleware):
             user = await repo.users.get_or_create_user(
                 event.from_user.id,
                 event.from_user.full_name,
+                event.chat.id,
                 event.from_user.username
             )
 

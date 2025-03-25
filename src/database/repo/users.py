@@ -1,5 +1,6 @@
 from typing import Optional
 
+from sqlalchemy import select, update
 from sqlalchemy.dialects.postgresql import insert
 
 from src.database.models import User
@@ -11,7 +12,8 @@ class UserRepo(BaseRepo):
         self,
         user_id: int,
         full_name: str,
-        username: Optional[str] = None
+        telegram_id: int,
+        username: Optional[str] = None,
     ):
         """
         Creates or updates a new user in the database and returns the user object.
@@ -27,13 +29,15 @@ class UserRepo(BaseRepo):
             .values(
                 user_id=user_id,
                 username=username,
-                full_name=full_name
+                full_name=full_name,
+                telegram_id=telegram_id
             )
             .on_conflict_do_update(
                 index_elements=[User.user_id],
                 set_=dict(
                     username=username,
                     full_name=full_name,
+                    telegram_id=telegram_id
                 ),
             )
             .returning(User)
@@ -42,3 +46,21 @@ class UserRepo(BaseRepo):
 
         await self.session.commit()
         return result.scalar_one()
+
+    async def get_by_id(self, user_id):
+        result = await self.session.execute(select(User).where(User.user_id == user_id))
+        return result.scalar_one_or_none()
+
+    async def get_by_chat_id(self, chat_id):
+        result = await self.session.execute(select(User).where(User.telegram_id == chat_id))
+        return result.scalar_one_or_none()
+
+    async def update_user(self, id, full_name, phone, is_registered):
+        stmt = (
+            update(User)
+            .where(User.user_id == id)
+            .values(full_name=full_name, phone=phone, is_registered=is_registered)
+        )
+        
+        await self.session.execute(stmt)
+        await self.session.commit()

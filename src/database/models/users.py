@@ -32,8 +32,8 @@ class User(Base, TimestampMixin, TableNameMixin):
     """
     user_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=False)
     username: Mapped[Optional[str]] = mapped_column(String(128))
-    full_name: Mapped[str] = mapped_column(String(128))
-    phone: Mapped[str] = mapped_column(String(50))
+    full_name: Mapped[str] = mapped_column(String(128), nullable=True)
+    phone: Mapped[str] = mapped_column(String(50), nullable=True)
     is_registered: Mapped[bool] = mapped_column(Boolean, server_default=false())
     telegram_id:Mapped[int] = mapped_column(BIGINT, unique=True)
 
