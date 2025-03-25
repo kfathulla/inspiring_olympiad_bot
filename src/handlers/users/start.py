@@ -54,5 +54,7 @@ async def check_subs(call: CallbackQuery, state: FSMContext, bot: Bot, config: C
         else:
             await state.set_state(RegistrFormState.Fullname)
             await call.message.answer(text="Iltimos to'liq ismingizni kiriting.", reply_markup=ReplyKeyboardRemove())
+
+        await call.answer()
     else:
         await call.answer("Kanallarga a'zo bo'ling.")
