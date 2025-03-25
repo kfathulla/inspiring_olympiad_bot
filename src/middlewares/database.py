@@ -1,7 +1,7 @@
 from typing import Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware
-from aiogram.types import Message
+from aiogram.types import Message, User
 
 from src.database.repo.requests import RequestsRepo
 
@@ -20,11 +20,12 @@ class DatabaseMiddleware(BaseMiddleware):
             repo = RequestsRepo(session)
 
             user = await repo.users.get_by_id(event.from_user.id)
-            if user is None:                
+            if user is None:   
+                event_user: User = data['event_from_user']             
                 user = await repo.users.get_or_create_user(
                     event.from_user.id,
                     f"{event.from_user.first_name} {event.from_user.last_name}", 
-                    event.chat.id,
+                    event_user.id,
                     event.from_user.username)
 
             data["session"] = session

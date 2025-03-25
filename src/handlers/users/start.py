@@ -36,12 +36,23 @@ async def user_start(message: Message, state: FSMContext, bot: Bot, repo: Reques
 
 
 @start_router.callback_query(PrivateFilter(), F.data == "check_subs")
-async def check_subs(call: CallbackQuery, state: FSMContext, bot: Bot, config: Config):
-    await call.answer()
-    status = True
+async def check_subs(call: CallbackQuery, state: FSMContext, bot: Bot, config: Config, repo: RequestsRepo):
+    is_subscribed = True
     for channel in config.misc.channel_ids:
-        status = status and await subscription.check(bot, user_id=call.from_user.id, channel=channel)
-    if status:
-        await state.set_state(RegistrFormState.Fullname)
-        await call.message.answer(text="Iltimos to'liq ismingizni kiriting.", reply_markup=ReplyKeyboardRemove())
-        await call.message.delete()
+        is_subscribed *= await subscription.check(bot, user_id=call.from_user.id, channel=channel)
+    if is_subscribed:
+        user = await repo.users.get_by_id(call.from_user.id)
+        if user is None:                
+            user = await repo.users.get_or_create_user(
+                call.message.from_user.id,
+                f"{call.from_user.first_name} {call.from_user.last_name}", 
+                call.message.chat.id,
+                call.from_user.username)
+
+        if user.is_registered == True:
+            await call.message.answer(text="👋 Botga hush kelibsiz!\nQuyidagi o'zingizga kerakli tugmani bosing", reply_markup=menu_keyboards)
+        else:
+            await state.set_state(RegistrFormState.Fullname)
+            await call.message.answer(text="Iltimos to'liq ismingizni kiriting.", reply_markup=ReplyKeyboardRemove())
+
+    await call.answer("Kanallarga a'zo bo'ling.")
