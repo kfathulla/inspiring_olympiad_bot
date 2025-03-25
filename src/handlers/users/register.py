@@ -32,6 +32,7 @@ async def register_command(message: Message, state: FSMContext, bot: Bot, repo: 
 async def register_fullname_handler(message: Message, state: FSMContext, bot: Bot):
     try:
         await state.update_data(fullname=message.text)
+        print("fullname: ", message.text)
         await state.set_state(RegistrFormState.Phone)
         text = ("Iltimos \"Nomerni yuborish\" tugmasini bosing.")
         await message.answer(text=text, reply_markup=phonenumber_keyboard)
@@ -43,7 +44,7 @@ async def register_fullname_handler(message: Message, state: FSMContext, bot: Bo
 async def register_phone_form(message: Message, state: FSMContext, repo: RequestsRepo):
     try:
         data = await state.update_data(phone=message.contact.phone_number.strip('+'))
-        await repo.users.update_user(message.from_user.id, data["fullname"], data["phone"], True)
+        await repo.users.update_user(id=message.from_user.id, full_name=data["fullname"], phone=data["phone"], is_registered=True)
         await state.clear()
         await message.answer(text="Tabriklaymiz siz muvaffaqiyatli Ramazon Olimpiadasiga ro'yhatdan o'tdingiz.\nQuyidagi o'zingizga kerakli tugmani bosing", reply_markup=menu_keyboards)
     except Exception as ex:

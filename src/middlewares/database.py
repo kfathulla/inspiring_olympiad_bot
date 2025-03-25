@@ -19,12 +19,13 @@ class DatabaseMiddleware(BaseMiddleware):
         async with self.session_pool() as session:
             repo = RequestsRepo(session)
 
-            user = await repo.users.get_or_create_user(
-                event.from_user.id,
-                event.from_user.full_name,
-                event.chat.id,
-                event.from_user.username
-            )
+            user = await repo.users.get_by_id(event.from_user.id)
+            if user is None:                
+                user = await repo.users.get_or_create_user(
+                    event.from_user.id,
+                    f"{event.from_user.first_name} {event.from_user.last_name}", 
+                    event.chat.id,
+                    event.from_user.username)
 
             data["session"] = session
             data["repo"] = repo

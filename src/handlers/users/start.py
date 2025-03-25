@@ -36,10 +36,12 @@ async def user_start(message: Message, state: FSMContext, bot: Bot, repo: Reques
 
 
 @start_router.callback_query(PrivateFilter(), F.data == "check_subs")
-async def check_subs(call: CallbackQuery, bot: Bot, config: Config):
+async def check_subs(call: CallbackQuery, state: FSMContext, bot: Bot, config: Config):
     await call.answer()
     result = str()
     for channel in config.misc.channel_ids:
         status = await subscription.check(bot, user_id=call.from_user.id, channel=channel)
     if status:
         await call.message.delete()
+        await state.set_state(RegistrFormState.Fullname)
+        await call.message.answer(text="Iltimos to'liq ismingizni kiriting.", reply_markup=ReplyKeyboardRemove())
