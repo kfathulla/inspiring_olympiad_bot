@@ -49,12 +49,11 @@ async def on_startup(bot: Bot, admin_ids: List[int], webhook_url: str):
     Perform startup operations including setting webhook and default commands.
     """
     try:
-        await bot.set_webhook(
-            url=webhook_url,
-            # Add any additional webhook parameters if needed
-            # drop_pending_updates=True,
-            # secret_token=config.tg_bot.webhook_secret,
-        )
+        webhook_info = await bot.get_webhook_info()
+        if webhook_info.url != webhook_url:
+            await bot.set_webhook(
+                url=webhook_url
+            )
         await set_default_commands(bot)
         await broadcaster.broadcast(bot, admin_ids, "Bot ishga tushdi")
         logging.info("Bot started successfully")
