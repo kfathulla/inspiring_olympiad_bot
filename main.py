@@ -1,3 +1,4 @@
+from contextlib import asynccontextmanager
 import logging
 from typing import List
 
@@ -38,9 +39,6 @@ setup_logging()
 
 # Initialize config
 config = load_config(".env")
-
-# Create FastAPI app
-app = FastAPI(title="Telegram Bot Webhook")
 
 # Global bot and dispatcher instances
 bot: Bot = None
@@ -122,11 +120,20 @@ async def shutdown_event():
     except Exception as e:
         logging.error(f"Shutdown error: {e}")
 
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await startup_event()
+    yield
+    await shutdown_event()
+
+app = FastAPI(title="Telegram Bot Webhook", lifespan=lifespan)
+
 @app.post("/webhook")
 async def telegram_webhook(request: Request):
     """
     Handle Telegram webhook updates with proper error handling.
     """
+    print(bot)
     if not bot or not dp:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
@@ -148,8 +155,8 @@ async def telegram_webhook(request: Request):
 if __name__ == "__main__":
     import uvicorn
     try:
-        app.add_event_handler("startup", startup_event)
-        app.add_event_handler("shutdown", shutdown_event)
+        # app.add_event_handler("startup", startup_event)
+        # app.add_event_handler("shutdown", shutdown_event)
         uvicorn.run(
             "main:app",
             host=config.tg_bot.webhook_server_host,
@@ -157,7 +164,7 @@ if __name__ == "__main__":
             reload=False,
             log_level="info"
         )
-    except (KeyboardInterrupt, SystemExit):
-        logging.info("Bot stopped gracefully")
+    except (KeyboardInterrupt, SystemExit) as e:
+        logging.info(f"Bot stopped gracefully {e}")
     except Exception as e:
         logging.critical(f"Fatal error: {e}")
