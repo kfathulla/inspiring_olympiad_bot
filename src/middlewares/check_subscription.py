@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta, timezone
 from aiogram import BaseMiddleware, Bot
 from aiogram.enums import ChatType
 from aiogram.exceptions import TelegramBadRequest
@@ -43,12 +44,13 @@ Olimpiadaga to'liq ro'yhatdan o'tish uchun quyidagi kanallarga a'zo bo'ling."""
         check_button = InlineKeyboardMarkup(
             inline_keyboard=[[]]
         )
+        expire_at = int((datetime.now(timezone.utc) + timedelta(hours=6)).timestamp())
         for channel in config.misc.channel_ids:
             status = await subscription.check(bot=bot, user_id=event_user.id, channel=channel)
             is_subscribed *= status
             channel = await bot.get_chat(channel)
             if not status:
-                invite_link = await channel.export_invite_link()
+                invite_link = await channel.create_invite_link(expire_date=expire_at, member_limit=1)
                 check_button.inline_keyboard.append([InlineKeyboardButton(url=invite_link, text=channel.title)])
 
         if not is_subscribed:
