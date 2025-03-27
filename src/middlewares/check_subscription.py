@@ -51,7 +51,7 @@ Olimpiadaga to'liq ro'yhatdan o'tish uchun quyidagi kanallarga a'zo bo'ling."""
             channel = await bot.get_chat(channel)
             if not status:
                 invite_link = await channel.create_invite_link(expire_date=expire_at, member_limit=1)
-                check_button.inline_keyboard.append([InlineKeyboardButton(url=invite_link, text=channel.title)])
+                check_button.inline_keyboard.append([InlineKeyboardButton(url=invite_link.invite_link, text=channel.title)])
 
         if not is_subscribed:
             check_button.inline_keyboard.append([InlineKeyboardButton(text="✅ A'zo bo'ldim", callback_data="check_subs")])
