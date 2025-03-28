@@ -6,11 +6,15 @@ from aiogram import Bot
 from aiogram import exceptions
 from aiogram.types import InlineKeyboardMarkup
 
+from src.database.models.users import User
+
 
 async def send_message(
     bot: Bot,
     user_id: Union[int, str],
     text: str,
+    from_chat_id: int = None,
+    message_id: int = None,
     disable_notification: bool = False,
     reply_markup: InlineKeyboardMarkup = None,
 ) -> bool:
@@ -25,12 +29,19 @@ async def send_message(
     :return: success.
     """
     try:
-        await bot.send_message(
-            user_id,
-            text,
-            disable_notification=disable_notification,
-            reply_markup=reply_markup,
-        )
+        if message_id is not None and from_chat_id is not None:
+            await bot.copy_message(
+                    chat_id=user_id,
+                    from_chat_id=from_chat_id,
+                    message_id=message_id
+                )
+        else:
+            await bot.send_message(
+                user_id,
+                text,
+                disable_notification=disable_notification,
+                reply_markup=reply_markup,
+            )
     except exceptions.TelegramBadRequest as e:
         logging.error("Telegram server says - Bad Request: chat not found")
     except exceptions.TelegramForbiddenError:
@@ -55,6 +66,8 @@ async def broadcast(
     bot: Bot,
     users: list[Union[str, int]],
     text: str,
+    from_chat_id: int= None,
+    message_id: int = None,
     disable_notification: bool = False,
     reply_markup: InlineKeyboardMarkup = None,
 ) -> int:
@@ -69,9 +82,9 @@ async def broadcast(
     """
     count = 0
     try:
-        for user_id in users:
+        for user in users:
             if await send_message(
-                bot, user_id, text, disable_notification, reply_markup
+                bot, user, text, from_chat_id, message_id, disable_notification, reply_markup
             ):
                 count += 1
             await asyncio.sleep(

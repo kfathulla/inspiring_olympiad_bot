@@ -17,8 +17,8 @@ from src.middlewares.database import DatabaseMiddleware
 from src.middlewares.config import ConfigMiddleware
 from src.config import load_config, Config
 from src.handlers import router_list
+from src.utils import broadcaster
 from src.utils.set_bot_commands import set_default_commands
-from src.services import broadcaster
 
 # Setup logging first
 def setup_logging():
@@ -55,7 +55,7 @@ async def on_startup(bot: Bot, admin_ids: List[int], webhook_url: str):
                 url=webhook_url
             )
         await set_default_commands(bot)
-        await broadcaster.broadcast(bot, admin_ids, "Bot ishga tushdi")
+        await broadcaster.broadcast(bot, admin_ids, text="Bot ishga tushdi")
         logging.info("Bot started successfully")
     except Exception as e:
         logging.error(f"Startup error: {e}")

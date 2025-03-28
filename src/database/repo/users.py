@@ -51,6 +51,10 @@ class UserRepo(BaseRepo):
         result = await self.session.execute(select(User).where(User.user_id == user_id))
         return result.scalar_one_or_none()
 
+    async def get_all(self):
+        result = await self.session.execute(select(User))
+        return result.scalars().all()
+
     async def get_by_chat_id(self, chat_id):
         result = await self.session.execute(select(User).where(User.telegram_id == chat_id))
         return result.scalar_one_or_none()
