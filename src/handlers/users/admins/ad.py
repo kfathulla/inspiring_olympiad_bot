@@ -40,7 +40,7 @@ async def send_ad_handler(message: Message, bot: Bot, state: FSMContext, repo: R
             count = await broadcast(bot, user_ids, "", message.chat.id, message.message_id, False)
             total_count+=count
             await progress_message.edit_text(
-                f"⏳ Jo'natilmoqda... {count} ta foydalanuvchiga yetkazildi"
+                f"⏳ Jo'natilmoqda... {total_count-count}+{count}={total_count} ta foydalanuvchiga yetkazildi"
             )
 
             offset += limit
