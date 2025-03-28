@@ -29,10 +29,6 @@ async def send_ad_handler(message: Message, bot: Bot, state: FSMContext, repo: R
     try:
         users = await repo.users.get_all()
         user_ids = [user.telegram_id for user in users]
-        for i in range(1000):
-            user_ids.append(user_ids[0])
-            user_ids.append(user_ids[1])
-            
         count = await broadcast(bot, user_ids, "", message.chat.id, message.message_id, False)
         
         await state.clear()
