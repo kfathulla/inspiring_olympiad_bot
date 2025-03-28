@@ -51,8 +51,8 @@ class UserRepo(BaseRepo):
         result = await self.session.execute(select(User).where(User.user_id == user_id))
         return result.scalar_one_or_none()
 
-    async def get_all(self):
-        result = await self.session.execute(select(User))
+    async def get_all(self, offset: int = 0, limit: int = 100):
+        result = await self.session.execute(select(User).order_by(User.created_at).offset(offset).limit(limit))
         return result.scalars().all()
 
     async def get_by_chat_id(self, chat_id):
