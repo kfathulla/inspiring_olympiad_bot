@@ -9,7 +9,7 @@ from aiogram.filters import CommandStart
 from src.config import Config
 from src.database.repo.requests import RequestsRepo
 from src.filters.private_chat_filter import PrivateFilter
-from src.keyboards.default.menu_keyboards import menu_keyboards
+from src.keyboards.inline.base_menu import base_menu_keyboards
 from src.utils.misc import subscription 
 from src.states.registr_form import RegistrFormState
 
@@ -27,7 +27,7 @@ async def user_start(message: Message, state: FSMContext, bot: Bot, repo: Reques
                 message.from_user.username or uuid.uuid4().__str__())
 
         if user.is_registered == True:
-            await message.answer(text="👋 Botga hush kelibsiz!\nQuyidagi o'zingizga kerakli tugmani bosing", reply_markup=menu_keyboards)
+            await message.answer(text="👋 Botga hush kelibsiz!\nQuyidagi o'zingizga kerakli tugmani bosing", reply_markup=base_menu_keyboards)
         else:
             await state.set_state(RegistrFormState.Fullname)
             await message.answer(text="Iltimos to'liq ismingizni kiriting.", reply_markup=ReplyKeyboardRemove())
@@ -50,7 +50,7 @@ async def check_subs(call: CallbackQuery, state: FSMContext, bot: Bot, config: C
                 call.from_user.username)
 
         if user.is_registered == True:
-            await call.message.answer(text="👋 Botga hush kelibsiz!\nQuyidagi o'zingizga kerakli tugmani bosing", reply_markup=menu_keyboards)
+            await call.message.answer(text="👋 Botga hush kelibsiz!\nQuyidagi o'zingizga kerakli tugmani bosing", reply_markup=base_menu_keyboards)
         else:
             await state.set_state(RegistrFormState.Fullname)
             await call.message.answer(text="Iltimos to'liq ismingizni kiriting.", reply_markup=ReplyKeyboardRemove())

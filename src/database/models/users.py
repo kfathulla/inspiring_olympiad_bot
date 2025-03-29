@@ -2,7 +2,7 @@ from typing import Optional
 
 from sqlalchemy import String
 from sqlalchemy import text, BIGINT, Boolean, true, false
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from .base import Base, TimestampMixin, TableNameMixin
 
@@ -30,12 +30,16 @@ class User(Base, TimestampMixin, TableNameMixin):
         Inherits methods from Base, TimestampMixin, and TableNameMixin classes, which provide additional functionality.
 
     """
+
     user_id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=False)
     username: Mapped[Optional[str]] = mapped_column(String(128))
     full_name: Mapped[str] = mapped_column(String(128), nullable=True)
     phone: Mapped[str] = mapped_column(String(50), nullable=True)
     is_registered: Mapped[bool] = mapped_column(Boolean, server_default=false())
-    telegram_id:Mapped[int] = mapped_column(BIGINT, unique=True)
+    telegram_id: Mapped[int] = mapped_column(BIGINT, unique=True)
+
+    tests = relationship("Test", back_populates="user", lazy="noload")
+    submissions = relationship("Submission", back_populates="user", lazy="noload")
 
     def __repr__(self):
         return f"<User {self.user_id} {self.username} {self.full_name}>"

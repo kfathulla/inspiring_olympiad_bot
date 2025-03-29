@@ -30,8 +30,9 @@ async def send_ad_handler(message: Message, bot: Bot, state: FSMContext, repo: R
     try:
         progress_message = await message.answer("🔃 Reklama jo'natish boshlandi...")
         total_count = 0
-        offset, limit = 0, 100
+        i, offset, limit = 0, 0, 100
         while True:
+            i+=1
             users = await repo.users.get_all(offset=offset, limit=limit)
             if not users:
                 break
@@ -40,7 +41,7 @@ async def send_ad_handler(message: Message, bot: Bot, state: FSMContext, repo: R
             count = await broadcast(bot, user_ids, "", message.chat.id, message.message_id, False)
             total_count+=count
             await progress_message.edit_text(
-                f"⏳ Jo'natilmoqda... {total_count-count}+{count}={total_count} ta foydalanuvchiga yetkazildi"
+                f"⏳ Jo'natilmoqda... {i}. {total_count-count}+{count}={total_count} ta foydalanuvchiga yetkazildi"
             )
 
             offset += limit

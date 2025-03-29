@@ -2,6 +2,10 @@ from dataclasses import dataclass
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.database.repo.submissions import SubmissionRepo
+from src.database.repo.test_answers import TestAnswerRepo
+from src.database.repo.tests import TestRepo
+from src.database.repo.submitted_answers import SubmittedAnswerRepo
 from src.database.repo.users import UserRepo
 from src.database.setup import create_engine
 
@@ -23,6 +27,33 @@ class RequestsRepo:
         """
         return UserRepo(self.session)
 
+    @property
+    def tests(self) -> TestRepo:
+        """
+        The Test repository sessions are required to manage test operations.
+        """
+        return TestRepo(self.session)
+
+    @property
+    def test_answers(self) -> TestAnswerRepo:
+        """
+        The TestAnswer repository repository sessions are required to manage test answer operations.
+        """
+        return TestAnswerRepo(self.session)
+
+    @property
+    def submissions(self) -> SubmissionRepo:
+        """
+        The Submission repository sessions are required to manage submission operations.
+        """
+        return SubmissionRepo(self.session)
+
+    @property
+    def submitted_answers(self) -> SubmittedAnswerRepo:
+        """
+        The Submission repository sessions are required to manage submission operations.
+        """
+        return SubmittedAnswerRepo(self.session)
 
 if __name__ == "__main__":
     from src.database.setup import create_session_pool
