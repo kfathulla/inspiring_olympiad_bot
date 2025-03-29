@@ -17,7 +17,7 @@ class Submission(Base, TimestampMixin, TableNameMixin):
     score: Mapped[float] = mapped_column(Numeric(precision=3, scale=2), default=0)
 
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False)
-    user = relationship('User', back_populates='submissions')
+    user = relationship('User', back_populates='submissions', lazy="joined", innerjoin=True)
     
     test_id: Mapped[int] = mapped_column(ForeignKey("tests.id"), nullable=False)
     test = relationship('Test', back_populates='submissions', lazy="joined", innerjoin=True)

@@ -13,11 +13,11 @@ class TestRepo(BaseRepo):
         return await self.session.get(
             Test,
             test.id,
-            options=[selectinload(Test.test_answers)]
+            options=[selectinload(Test.answers)]
         )
     
     async def get_test_by_id(self, id):
-        stmt = select(Test).options(selectinload(Test.test_answers)).where(Test.id == id)
+        stmt = select(Test).options(selectinload(Test.answers)).where(Test.id == id)
         result = await self.session.execute(stmt)
         
         return result.scalar_one_or_none()

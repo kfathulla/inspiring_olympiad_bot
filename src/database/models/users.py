@@ -38,6 +38,8 @@ class User(Base, TimestampMixin, TableNameMixin):
     is_registered: Mapped[bool] = mapped_column(Boolean, server_default=false())
     telegram_id: Mapped[int] = mapped_column(BIGINT, unique=True)
 
+    private_channel_link: Mapped[str] = mapped_column(String(128), nullable=True)
+
     tests = relationship("Test", back_populates="user", lazy="noload")
     submissions = relationship("Submission", back_populates="user", lazy="noload")
 

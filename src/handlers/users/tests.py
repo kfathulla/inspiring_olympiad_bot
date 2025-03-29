@@ -59,6 +59,7 @@ async def test_cancel_submit(
     callback: CallbackQuery,
     state: FSMContext,
     bot: Bot,
+    user: User,
     repo: RequestsRepo,
     config: Config,
 ):
@@ -67,9 +68,9 @@ async def test_cancel_submit(
         await callback.message.answer(
             text="Quyidagilardan birini tanlang! 👇",
             reply_markup=(
-                admin_base_menu_keyboards
+                admin_base_menu_keyboards(user.private_channel_link)
                 if callback.from_user.id in config.tg_bot.admin_ids
-                else base_menu_keyboards
+                else base_menu_keyboards(user.private_channel_link)
             ),
         )
 
@@ -133,14 +134,14 @@ async def submit_test_handler(
             await message.answer("❌ Test topilmadi.")
             return
 
-        closed_answers = [a for a in test.test_answers if a.type == 0]
+        closed_answers = [a for a in test.answers if a.type == 0]
         if len(submitted_closed_answers) != len(closed_answers):
             await message.answer(
                 f"❌ {test.id} raqamli testda {len(closed_answers)} ta yopiq test bor. \n❓️ Siz esa {len(submitted_closed_answers)} ta yopiq javob jo'natdingiz.\n♻️ Iltimos qayta sanab chiqing."
             )
             return
 
-        open_answers = [a for a in test.test_answers if a.type == 1]
+        open_answers = [a for a in test.answers if a.type == 1]
         if len(open_answers) != 0 and len(submitted_open_answers) != len(
             open_answers
         ):
@@ -186,15 +187,15 @@ async def submit_test_handler(
             )
 
         percentage = (
-            (correct_count / len(test.test_answers)) * 100
-            if len(test.test_answers) > 0
+            (correct_count / len(test.answers)) * 100
+            if len(test.answers) > 0
             else 0
         )
         await repo.submissions.add_submission(
             submission=Submission(
                 text=message.text,
                 correct_count=correct_count,
-                incorrect_count=len(test.test_answers) - correct_count,
+                incorrect_count=len(test.answers) - correct_count,
                 score=total_score,
                 user_id=user.user_id,
                 test_id=test.id,
@@ -207,7 +208,7 @@ async def submit_test_handler(
         header = f"""🏆 <a href="t.me/{user.username}">{user.full_name}</a> ning natijasi
 
 📌 Test kodi: {test.id}
-📋 Savollar soni: {len(test.test_answers)} ta"""
+📋 Savollar soni: {len(test.answers)} ta"""
         if not test.is_show_correct_count:
             await message.answer(text="Javobingiz qabul qilindi")
             return
@@ -322,18 +323,18 @@ async def my_result(
                 user_id=callback.from_user.id, test_id=callback_data.test_id
             )
         )[0]
-        submission.test.test_answers = await repo.test_answers.get_test_answers_by_test(submission.test_id)
+        submission.test.answers = await repo.test_answers.get_test_answers_by_test(submission.test_id)
         submission.submitted_answers = await repo.submitted_answers.get_submitted_answers_by_submission(submission.id)
         percentage = (
-            (submission.correct_count / len(submission.test.test_answers)) * 100
-            if len(submission.test.test_answers) > 0
+            (submission.correct_count / len(submission.test.answers)) * 100
+            if len(submission.test.answers) > 0
             else 0
         )
         summary = f"""\n\n📊 Jami: {submission.correct_count} ta ({percentage:.2f}%)"""
         header = f"""🏆 <a href="t.me/{user.username}">{user.full_name}</a> ning natijasi
 
 📌 Test kodi: {submission.test_id}
-📋 Savollar soni: {len(submission.test.test_answers)} ta"""
+📋 Savollar soni: {len(submission.test.answers)} ta"""
         if not submission.test.is_show_correct_count:
             await callback.message.answer(text="Javobingiz qabul qilingan")
             return

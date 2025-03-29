@@ -152,11 +152,13 @@ class RedisConfig:
 @dataclass
 class Miscellaneous:
     channel_ids: list[int]
+    private_channel: int
 
     @staticmethod
     def from_env(env: Env):
         channel_ids = env.list("CHANNELS", subcast=int)
-        return Miscellaneous(channel_ids=channel_ids)
+        private_channel = env.int("PRIVATE_CHANNEL")
+        return Miscellaneous(channel_ids=channel_ids, private_channel=private_channel)
 
 
 @dataclass

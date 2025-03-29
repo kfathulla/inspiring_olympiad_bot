@@ -20,7 +20,7 @@ class Test(Base, TimestampMixin, TableNameMixin):
     
     finished_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=func.now())
 
-    test_answers = relationship('TestAnswer', back_populates='test', lazy="noload")
+    answers = relationship('TestAnswer', back_populates='test', lazy="noload")
     submissions = relationship('Submission', back_populates='test', lazy="noload")
 
     def __repr__(self):

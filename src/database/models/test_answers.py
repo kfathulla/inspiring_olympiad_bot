@@ -18,7 +18,7 @@ class TestAnswer(Base, TimestampMixin, TableNameMixin):
     score: Mapped[float] = mapped_column(Numeric(precision=3, scale=2), default=0)
 
     test_id: Mapped[int] = mapped_column(ForeignKey("tests.id"), nullable=False)
-    test = relationship('Test', back_populates='test_answers')
+    test = relationship('Test', back_populates='answers')
 
     submitted_answers = relationship('SubmittedAnswer', back_populates='test_answer', lazy="noload")
 
