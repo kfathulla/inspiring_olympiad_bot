@@ -104,6 +104,11 @@ async def submit_test_handler(
             )
             return
 
+        test = await repo.tests.get_test_by_id(test_id)
+        if test.is_finished:
+            await message.answer("‼️ Bu testga javob jo'natish tugagan.")
+            return
+
         if any(c.isdigit() for c in closed_answer_part):
             submitted_closed_answers = []
             pairs = re.findall(r"(\d+)([a-zA-Z])", closed_answer_part)
@@ -129,7 +134,6 @@ async def submit_test_handler(
                 if line.strip()
             ]
 
-        test = await repo.tests.get_test_by_id(test_id)
         if not test:
             await message.answer("❌ Test topilmadi.")
             return
