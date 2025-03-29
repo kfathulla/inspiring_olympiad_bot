@@ -19,7 +19,7 @@ async def generate_test_report(test: Test, submissions: List[Submission]):
                 "Soni": submission.correct_count,
                 "Ball": submission.score,
                 "Foizda": (
-                    (submission.score / test_score) * 100
+                    ((submission.score / test_score) * 100)
                     if test_score > 0
                     else (
                         (
