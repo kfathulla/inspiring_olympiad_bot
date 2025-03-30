@@ -798,7 +798,7 @@ async def submit_test_handler(
 ):
     try:
         parts = message.text.split("\n", 1)
-        if not parts or "*" not in parts[0] or "*" not in parts[1]:
+        if not parts or "*" not in parts[0]:
             await message.answer("Test javobini noto'g'ri formatda kiritdingiz.")
             return
 
@@ -843,10 +843,10 @@ async def submit_test_handler(
             ]
 
         submitted_open_answers = []
-        if len(parts) > 2:
+        if len(parts) > 1:
             submitted_open_answers = [
                 (i + 1, line.strip())
-                for i, line in enumerate(parts[2].split("\n"))
+                for i, line in enumerate(parts[1].split("\n"))
                 if line.strip()
             ]
 
