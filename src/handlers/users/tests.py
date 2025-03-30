@@ -105,6 +105,10 @@ async def submit_test_handler(
             return
 
         test = await repo.tests.get_test_by_id(test_id)
+        if not test:
+            await message.answer("❌ Test topilmadi.")
+            return
+        
         if test.is_finished:
             await message.answer("‼️ Bu testga javob jo'natish tugagan.")
             return
@@ -133,10 +137,6 @@ async def submit_test_handler(
                 for i, line in enumerate(parts[1].split("\n"))
                 if line.strip()
             ]
-
-        if not test:
-            await message.answer("❌ Test topilmadi.")
-            return
 
         closed_answers = [a for a in test.answers if a.type == 0]
         if len(submitted_closed_answers) != len(closed_answers):
@@ -231,7 +231,7 @@ async def submit_test_handler(
                 )
             else:
                 correct_mark = (
-                    f"✅  {answer.score} ball" if answer.is_correct else "❌   0 ball"
+                    f"✅  {answer.score} ball" if answer.is_correct else "❌"
                 )
 
             answers_lines.append(f"{i}. {answer.text} {correct_mark}")
@@ -346,7 +346,7 @@ async def my_result(
         if not submission.test.is_show_incorrects:
             await callback.message.answer(text=header + summary, disable_web_page_preview=True)
             await callback.answer()
-            return
+            return 
 
         answers_lines = []
         for i, answer in enumerate(submission.submitted_answers, 1):

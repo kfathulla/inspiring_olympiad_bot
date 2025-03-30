@@ -20,7 +20,7 @@ class SubmissionRepo(BaseRepo):
         return result.scalar_one_or_none()
 
     async def get_submissions_by_test(self, test_id: int):
-        stmt = select(Submission).where(Submission.test_id == test_id)
+        stmt = select(Submission).where(Submission.test_id == test_id).order_by(Submission.score.desc(), Submission.correct_count.desc())
         result = await self.session.execute(stmt)
 
         return result.scalars().all()

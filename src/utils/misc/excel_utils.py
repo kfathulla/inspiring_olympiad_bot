@@ -11,10 +11,18 @@ from src.database.models.submissions import Submission
 async def generate_test_report(test: Test, submissions: List[Submission]):
     data = []
     test_score = sum(answer.score for answer in test.answers)
+    rank, score, correct_count = 0, test_score + 1, len(test.answers) + 1
     for i, submission in enumerate(submissions, start=1):
+        if (
+            submission.score == 0 or submission.score < score
+        ) and submission.correct_count < correct_count:
+            rank += 1
+            score = submission.score
+            correct_count = submission.correct_count
+
         data.append(
             {
-                "T/R": i,
+                "T/R": rank,
                 "Ism familiya": submission.user.full_name,
                 "Soni": submission.correct_count,
                 "Ball": submission.score,
@@ -22,11 +30,8 @@ async def generate_test_report(test: Test, submissions: List[Submission]):
                     ((submission.score / test_score) * 100)
                     if test_score > 0
                     else (
-                        (
-                            submission.correct_count
-                            / (submission.correct_count + submission.incorrect_count)
-                        )
-                        * 100
+                        submission.correct_count
+                        / (submission.correct_count + submission.incorrect_count)
                     )
                 ),
                 "Sana": submission.created_at.strftime("%d.%m.%Y"),
