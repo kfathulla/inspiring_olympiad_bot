@@ -792,7 +792,7 @@ async def test_cancel_submit(
         )
 
 
-@admin_tests_router.message(PrivateFilter(), SubmitTestState.Answer)
+@admin_tests_router.message(PrivateFilter(), AdminFilter(), SubmitTestState.Answer)
 async def submit_test_handler(
     message: Message, state: FSMContext, repo: RequestsRepo
 ):
@@ -823,10 +823,6 @@ async def submit_test_handler(
         test = await repo.tests.get_test_by_id(test_id)
         if not test:
             await message.answer("❌ Test topilmadi.")
-            return
-
-        if test.is_finished:
-            await message.answer("‼️ Bu testga javob jo'natish tugagan.")
             return
 
         if any(c.isdigit() for c in closed_answer_part):
