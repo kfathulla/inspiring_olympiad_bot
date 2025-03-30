@@ -741,9 +741,9 @@ async def info(
         )
 
 
-@admin_tests_router.callback_query(PrivateFilter(), Command("submit_by_admin"))
+@admin_tests_router.message(PrivateFilter(), Command("submit_by_admin"))
 async def submit_test(
-    callback: CallbackQuery, state: FSMContext, bot: Bot, repo: RequestsRepo
+    message: Message, state: FSMContext, bot: Bot, repo: RequestsRepo
 ):
     try:
         text = """❗️ Testga javob berish
@@ -758,13 +758,12 @@ user_id*123*abcdabcdabcd...  yoki
 
 ✅ Katta(A) va kichik(a) harflar bir xil hisoblanadi."""
         await state.set_state(SubmitTestState.Answer)
-        await callback.message.answer(
+        await message.answer(
             text=text, reply_markup=test_cancel_submit_keyboard
         )
-        await callback.answer()
     except Exception as ex:
         logging.error(ex)
-        await callback.message.answer(
+        await message.answer(
             "❌ Xatolik yuz berdi. Iltimos qaytatdan urinib ko'ring."
         )
 
