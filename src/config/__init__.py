@@ -130,7 +130,7 @@ class RedisConfig:
         """
         Constructs and returns a Redis DSN (Data Source Name) for this database configuration.
         """
-        if self.redis_pass:
+        if False:
             return f"redis://:{self.redis_pass}@{self.redis_host}:{self.redis_port}/0"
         else:
             return f"redis://{self.redis_host}:{self.redis_port}/0"
@@ -202,5 +202,5 @@ def load_config(path: str = None) -> Config:
     return Config(
         tg_bot=TgBot.from_env(env),
         db=DbConfig.from_env(env),
-        # redis=RedisConfig.from_env(env),
+        redis=RedisConfig.from_env(env),
         misc=Miscellaneous.from_env(env))

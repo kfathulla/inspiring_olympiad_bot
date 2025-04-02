@@ -7,6 +7,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
+from aiogram.fsm.storage.redis import RedisStorage, DefaultKeyBuilder
 from aiogram.types import Update
 from fastapi import FastAPI, HTTPException, Request, status
 from fastapi.responses import JSONResponse
@@ -43,6 +44,15 @@ config = load_config(".env")
 # Global bot and dispatcher instances
 bot: Bot = None
 dp: Dispatcher = None
+
+def get_storage(config: Config):
+    if config.tg_bot.use_redis:
+        return RedisStorage.from_url(
+            config.redis.dsn(),
+            key_builder=DefaultKeyBuilder(with_bot_id=True, with_destiny=True),
+        )
+    else:
+        return MemoryStorage()
 
 async def on_startup(bot: Bot, admin_ids: List[int], webhook_url: str):
     """
