@@ -30,7 +30,7 @@ from src.keyboards.inline.test_cancel_adding_open_answers import (
     test_cancel_adding_open_answers_menu,
 )
 from src.states.add_test_open_answers import AddTestOpenAnswersState
-from src.states.submit_test import SubmitTestState
+from src.states.submit_test import AdminSubmitTestState
 from src.states.add_test_scores import AddTestScoresState
 from src.states.create_test import CreateTestState
 from src.utils.misc.excel_utils import generate_test_report
@@ -757,7 +757,7 @@ user_id*123*abcdabcdabcd...  yoki
 ⁉️ Testga faqat bir marta javob berish mumkin.
 
 ✅ Katta(A) va kichik(a) harflar bir xil hisoblanadi."""
-        await state.set_state(SubmitTestState.Answer)
+        await state.set_state(AdminSubmitTestState.Answer)
         await message.answer(
             text=text, reply_markup=test_cancel_submit_keyboard
         )
@@ -792,7 +792,7 @@ async def test_cancel_submit(
         )
 
 
-@admin_tests_router.message(PrivateFilter(), AdminFilter(), SubmitTestState.Answer)
+@admin_tests_router.message(PrivateFilter(), AdminFilter(), AdminSubmitTestState.Answer)
 async def submit_test_handler(
     message: Message, state: FSMContext, repo: RequestsRepo
 ):
