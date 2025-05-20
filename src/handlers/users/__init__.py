@@ -10,6 +10,7 @@ from .echo import echo_router
 from .profile import profile_router
 from .register import register_router
 from .tests import tests_router
+from .sat_course import sat_course_router
 
 user_routers_list = [
     start_router,
@@ -17,6 +18,7 @@ user_routers_list = [
     tests_router,
     profile_router,
     register_router,
+    sat_course_router,
     echo_router
 ]
 

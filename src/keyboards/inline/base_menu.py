@@ -6,7 +6,13 @@ def admin_base_menu_keyboards(private_channel_link):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Bonus kanalga o'tish", url=private_channel_link
+                    text="📚 SAT kursi haqida", callback_data="sat_course/info"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="🗂 Vazifaga javob berish",
+                    callback_data="sat_course/send_homework",
                 )
             ],
             [
@@ -29,7 +35,13 @@ def base_menu_keyboards(private_channel_link):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="Bonus kanalga o'tish", url=private_channel_link
+                    text="SAT kursi haqida", callback_data="sat_course/info"
+                )
+            ],
+            [
+                InlineKeyboardButton(
+                    text="Vazifaga javob berish",
+                    callback_data="sat_course/send_homework",
                 )
             ],
             [

@@ -10,9 +10,7 @@ echo_router = Router()
 
 @echo_router.message(PrivateFilter(), F.text, StateFilter(None))
 async def bot_echo(message: types.Message):
-    text = ["Echo.", "Xabar:", message.text]
-
-    await message.answer("\n".join(text))
+    await message.answer("Iltimos botni qayta boshlash uchun /start ni bosing.")
 
 
 @echo_router.message(PrivateFilter(), F.text)
