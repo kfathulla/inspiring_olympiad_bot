@@ -6,15 +6,26 @@ def admin_base_menu_keyboards(private_channel_link):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="📚 SAT kursi haqida", callback_data="sat_course/info"
+                    text="🥇 May olimpiadasi", callback_data="olympiad/may"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="🗂 Vazifaga javob berish",
-                    callback_data="sat_course/send_homework",
+                    text="📚 SAT Math marafon 10", callback_data="sat_course/info"
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    text="🎓 Grandlar olimpiadasi 20 MILLION",
+                    callback_data="olympiad/grands",
+                )
+            ],
+            # [
+            #     InlineKeyboardButton(
+            #         text="🗂 Vazifaga javob berish",
+            #         callback_data="sat_course/send_homework",
+            #     )
+            # ],
             [
                 InlineKeyboardButton(text="➕ Test joylash", callback_data="tests/add"),
             ],
@@ -35,15 +46,26 @@ def base_menu_keyboards(private_channel_link):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="SAT kursi haqida", callback_data="sat_course/info"
+                    text="🥇 May olimpiadasi", callback_data="olympiad/may"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="Vazifaga javob berish",
-                    callback_data="sat_course/send_homework",
+                    text="📚 SAT Math marafon 10", callback_data="sat_course/info"
                 )
             ],
+            [
+                InlineKeyboardButton(
+                    text="🎓 Grandlar olimpiadasi 20 MILLION",
+                    callback_data="olympiad/grands",
+                )
+            ],
+            # [
+            #     InlineKeyboardButton(
+            #         text="🗂 Vazifaga javob berish",
+            #         callback_data="sat_course/send_homework",
+            #     )
+            # ],
             [
                 InlineKeyboardButton(
                     text="✅ Testga javob berish", callback_data="tests/submit"

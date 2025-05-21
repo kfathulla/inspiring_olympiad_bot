@@ -11,6 +11,7 @@ from .profile import profile_router
 from .register import register_router
 from .tests import tests_router
 from .sat_course import sat_course_router
+from .olympiad import olympiad_router
 
 user_routers_list = [
     start_router,
@@ -19,6 +20,7 @@ user_routers_list = [
     profile_router,
     register_router,
     sat_course_router,
+    olympiad_router,
     echo_router
 ]
 
