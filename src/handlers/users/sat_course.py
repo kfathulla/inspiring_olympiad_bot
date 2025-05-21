@@ -23,9 +23,9 @@ async def sat_course_info(callback: CallbackQuery, user: User, config: Config):
     try:
         await callback.message.answer(
             text="SAT kursi haqida ma'lumotlar:\n\n"
-            "1. \n"
-            "2. \n"
-            "3. \n"
+            "1.  May olimpiadasi \n\n"
+            "2. SAT MATH MARAFON 10 \n\n"
+            "3. 20 Millionlik Grantlar olimpiadasi \n\n"
             "4. Qo'shimcha ma'lumotlar: Kurs davomida sizga barcha kerakli materiallar taqdim etiladi."
         )
         await callback.answer()
