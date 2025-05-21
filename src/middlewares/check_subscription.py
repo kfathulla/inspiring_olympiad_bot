@@ -16,20 +16,27 @@ class CheckSubscriptionMiddleware(BaseMiddleware):
     def __init__(self):
         super().__init__()
 
-    async def __call__(self, handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]], event: TelegramObject,
-                       data: Dict[str, Any]) -> Any:
+    async def __call__(
+        self,
+        handler: Callable[[TelegramObject, Dict[str, Any]], Awaitable[Any]],
+        event: TelegramObject,
+        data: Dict[str, Any],
+    ) -> Any:
         if isinstance(event, Message) and event.chat.type != ChatType.PRIVATE:
             return await handler(event, data)  # Skip middleware in non-private chats
 
-        if isinstance(event, CallbackQuery) and event.message.chat.type != ChatType.PRIVATE:
+        if (
+            isinstance(event, CallbackQuery)
+            and event.message.chat.type != ChatType.PRIVATE
+        ):
             return await handler(event, data)
 
-        event_user: User = data['event_from_user']
-        bot: Bot = data['bot']
-        config: Config = data['config']
+        event_user: User = data["event_from_user"]
+        bot: Bot = data["bot"]
+        config: Config = data["config"]
 
         if isinstance(event, Message):
-            if event.text in ['/help']:
+            if event.text in ["/help"]:
                 return await handler(event, data)
         elif isinstance(event, CallbackQuery):
             if event.data == "check_subs":
@@ -37,28 +44,46 @@ class CheckSubscriptionMiddleware(BaseMiddleware):
         else:
             return await handler(event, data)
 
-        msg = """Assalomu alaykum. Tabriklaymiz siz Umumiy jamg'armasi 20.000.000 so'm bo'lgan Ramazon olimpiadasiga qatnashish imkoniyatiga ega bo'ldingiz.
+        msg = """Assalomu alaykum qadrli ilm ixlosmandlari sizlarni ilm targ'iboti uchun qilayotgan ishlarimizni qo'llab quvvatlayotganingiz uchun tashakkur bildiramiz. 
 
-Olimpiadaga to'liq ro'yhatdan o'tish uchun quyidagi kanallarga a'zo bo'ling."""
+Botimizdan to'liq foydalanishingiz uchun quyidagi kanallarimizga a'zo bo'ling."""
         is_subscribed = True
-        check_button = InlineKeyboardMarkup(
-            inline_keyboard=[[]]
-        )
+        check_button = InlineKeyboardMarkup(inline_keyboard=[[]])
         expire_at = int((datetime.now(timezone.utc) + timedelta(hours=6)).timestamp())
         for channel in config.misc.channel_ids:
-            status = await subscription.check(bot=bot, user_id=event_user.id, channel=channel)
+            status = await subscription.check(
+                bot=bot, user_id=event_user.id, channel=channel
+            )
             is_subscribed *= status
             channel = await bot.get_chat(channel)
             if not status:
-                invite_link = await channel.create_invite_link(expire_date=expire_at, member_limit=1)
-                check_button.inline_keyboard.append([InlineKeyboardButton(url=invite_link.invite_link, text=channel.title)])
+                invite_link = await channel.create_invite_link(
+                    expire_date=expire_at, member_limit=1
+                )
+                check_button.inline_keyboard.append(
+                    [
+                        InlineKeyboardButton(
+                            url=invite_link.invite_link, text=channel.title
+                        )
+                    ]
+                )
 
         if not is_subscribed:
-            check_button.inline_keyboard.append([InlineKeyboardButton(text="✅ A'zo bo'ldim", callback_data="check_subs")])
+            check_button.inline_keyboard.append(
+                [
+                    InlineKeyboardButton(
+                        text="✅ A'zo bo'ldim", callback_data="check_subs"
+                    )
+                ]
+            )
             if isinstance(event, Message):
-                await event.answer(msg, disable_web_page_preview=True, reply_markup=check_button)
+                await event.answer(
+                    msg, disable_web_page_preview=True, reply_markup=check_button
+                )
             elif isinstance(event, CallbackQuery):
-                await event.message.answer(msg, disable_web_page_preview=True, reply_markup=check_button)
+                await event.message.answer(
+                    msg, disable_web_page_preview=True, reply_markup=check_button
+                )
             return
 
         return await handler(event, data)
