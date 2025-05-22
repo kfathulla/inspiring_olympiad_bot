@@ -51,7 +51,8 @@ async def send_ad(bot: Bot, repo: RequestsRepo, admin_id: int, ad_message: Messa
         admin_id, text="🔃 Reklama jo'natish boshlandi...\n"
     )
     start_time = datetime.now()
-    total_count = 0
+    success_count = 0
+    fail_count = 0
     i, offset, limit = 0, 0, 100
     while True:
         i += 1
@@ -63,18 +64,26 @@ async def send_ad(bot: Bot, repo: RequestsRepo, admin_id: int, ad_message: Messa
         count = await broadcast(
             bot, user_ids, "", admin_id, ad_message.message_id, False
         )
-        total_count += count
+        success_count += count
+        fail_count += len(user_ids) - count
         await progress_message.edit_text(
-            f"⏳ Jo'natilmoqda... \n{i}. {total_count-count}+{count}={total_count} ta foydalanuvchiga yetkazildi"
+            f"⏳ Jo'natilmoqda... \n"
+            f"{i}. {success_count-count}+{count}={success_count} ta foydalanuvchiga yetkazildi"
         )
 
         offset += limit
         await asyncio.sleep(1)
 
     duration = datetime.now() - start_time
+    total_count = success_count + fail_count
     await progress_message.delete()
     await bot.send_message(
         admin_id,
-        text=f"Reklama muvaffaqiyatli yuborildi. \nJami: {total_count} ta.\nVaqt: {duration.__str__()}.\n\n",
+        text=f"Reklama muvaffaqiyatli yuborildi. \n"
+        f"Jami: {total_count} ta.\n"
+        f"Muvaffaqiyatli: {success_count} ta.\n"
+        f"Muvaffaqiyatsiz: {fail_count}\n"
+        f"Vaqt: {duration.__str__()}.\n"
+        f"Rate: {success_count/total_count:.1%}\n",
         reply_markup=ReplyKeyboardRemove(),
     )
