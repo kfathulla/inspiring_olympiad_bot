@@ -100,7 +100,7 @@ class TgBot:
         """
         token = env.str("BOT_TOKEN")
         admin_ids = env.list("ADMINS", subcast=int)
-        use_redis = env.bool("USE_REDIS")
+        use_redis = env.bool("USE_REDIS", default=False)
         webhook_url = env.str("WEBHOOK_URL")
         webhook_server_host = env.str("WEBHOOK_SERVER_HOST")
         webhook_server_port = env.int("WEBHOOK_SERVER_PORT")

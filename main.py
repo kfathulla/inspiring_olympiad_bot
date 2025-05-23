@@ -46,6 +46,7 @@ bot: Bot = None
 dp: Dispatcher = None
 
 def get_storage(config: Config):
+    print(f"user_redis: {config.tg_bot.use_redis}")
     if config.tg_bot.use_redis:
         return RedisStorage.from_url(
             config.redis.dsn(),
