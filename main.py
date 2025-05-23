@@ -94,7 +94,7 @@ async def initialize_bot():
     """
     global bot, dp
     
-    storage = get_storage()
+    storage = get_storage(config=config)
     bot = Bot(
         token=config.tg_bot.token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML)
