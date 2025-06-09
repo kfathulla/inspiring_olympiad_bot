@@ -6,12 +6,7 @@ def admin_base_menu_keyboards(private_channel_link):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="📚 SAT Math marafon 10", callback_data="sat_course/info"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="🎓 Mini kurs",
+                    text="🎓 Intensiv 1.0 kurs",
                     callback_data="courses/intensive_course",
                 )
             ],
@@ -41,12 +36,7 @@ def base_menu_keyboards(private_channel_link):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="📚 SAT Math marafon 10", callback_data="sat_course/info"
-                )
-            ],
-            [
-                InlineKeyboardButton(
-                    text="🎓 Mini kurs",
+                    text="🎓 Intensiv 1.0 kurs",
                     callback_data="courses/intensive_course",
                 )
             ],
