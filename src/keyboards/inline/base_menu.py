@@ -12,7 +12,7 @@ def admin_base_menu_keyboards(private_channel_link):
             [
                 InlineKeyboardButton(
                     text="🎓 Mini kurs",
-                    callback_data="courses/mini_course",
+                    callback_data="courses/intensive_course",
                 )
             ],
             # [
@@ -47,7 +47,7 @@ def base_menu_keyboards(private_channel_link):
             [
                 InlineKeyboardButton(
                     text="🎓 Mini kurs",
-                    callback_data="courses/mini_course",
+                    callback_data="courses/intensive_course",
                 )
             ],
             # [

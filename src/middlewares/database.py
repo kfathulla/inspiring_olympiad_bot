@@ -33,7 +33,7 @@ class DatabaseMiddleware(BaseMiddleware):
                     event.from_user.username
                 )
 
-            if user.private_channel_link is None:
+            if user.private_channel_link is None and user.referral_count >= 3:
                 channel = await bot.get_chat(config.misc.private_channel)
                 expire_at = int((datetime.now(timezone.utc) + timedelta(days=7)).timestamp())
                 invite_link = await channel.create_invite_link(expire_date=expire_at, member_limit=1)

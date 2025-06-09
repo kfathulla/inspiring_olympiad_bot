@@ -8,18 +8,18 @@ from src.keyboards.inline.base_menu import (
     base_menu_keyboards,
     admin_base_menu_keyboards,
 )
-from src.keyboards.inline.mini_course_menu import mini_course_menu
+from src.keyboards.inline.mini_course_menu import mini_course_menu_keyboards
 from src.database.models.users import User
 
 
 courses_router = Router()
 
-@courses_router.callback_query(PrivateFilter(), F.data == "courses/mini_course")
-async def sat_course_info(callback: CallbackQuery, user: User, config: Config):
+@courses_router.callback_query(PrivateFilter(), F.data == "courses/intensive_course")
+async def intensive_course(callback: CallbackQuery, user: User, config: Config):
     try:
         await callback.message.answer(
             text="Mini kurs haqida ma'lumot tez orada joylanadi.",
-            reply_markup=mini_course_menu
+            reply_markup=mini_course_menu_keyboards(user.private_channel_link)
         )
         await callback.answer()
     except Exception as ex:
@@ -28,8 +28,8 @@ async def sat_course_info(callback: CallbackQuery, user: User, config: Config):
             "❌ Xatolik yuz berdi. Iltimos qaytatdan urinib ko'ring."
         )
         
-@courses_router.callback_query(PrivateFilter(), F.data == "courses/mini_course/referral_post")
-async def sat_course_info(callback: CallbackQuery, user: User, config: Config, bot: Bot):
+@courses_router.callback_query(PrivateFilter(), F.data == "courses/intensive_course/referral_post")
+async def intensive_course_referral_post(callback: CallbackQuery, user: User, config: Config, bot: Bot):
     try:
         me = await bot.get_me()
         await callback.message.answer(
@@ -70,14 +70,14 @@ Tayyor boʻlsangiz hoziroq yuqoridagi postni tarqatib do'stlarni taklif qilishni
             "❌ Xatolik yuz berdi. Iltimos qaytatdan urinib ko'ring."
         )
         
-@courses_router.callback_query(PrivateFilter(), F.data == "courses/mini_course/referral_ball")
-async def sat_course_info(callback: CallbackQuery, user: User, config: Config):
+@courses_router.callback_query(PrivateFilter(), F.data == "courses/intensive_course/referral_ball")
+async def intensive_course_referral_ball(callback: CallbackQuery, user: User, config: Config):
     try:
         await callback.message.answer(
             text=f"""📈Sizning ballaringiz: {user.referral_count} ball. 
 
 ‼️Sizning havolangiz orqali kirgan odam kanallarimizdan chiqib ketsa balingiz kamayishi mumkin.""",
-            reply_markup=mini_course_menu
+            reply_markup=mini_course_menu_keyboards(user.private_channel_link)
         )
         await callback.answer()
     except Exception as ex:
