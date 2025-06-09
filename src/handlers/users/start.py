@@ -17,7 +17,7 @@ start_router = Router()
 
 
 @start_router.message(PrivateFilter(), CommandStart())
-async def user_start(message: Message, state: FSMContext, bot: Bot, repo: RequestsRepo):
+async def user_start(message: Message, state: FSMContext, bot: Bot, repo: RequestsRepo, command_args: str):
     try:
         user = await repo.users.get_by_id(message.from_user.id)
         if user is None:
@@ -34,7 +34,9 @@ async def user_start(message: Message, state: FSMContext, bot: Bot, repo: Reques
                 reply_markup=base_menu_keyboards(user.private_channel_link),
             )
         else:
+            referrer_id = int(command_args) if command_args and command_args and command_args.isdigit() else None
             await state.set_state(RegistrFormState.Fullname)
+            await state.update_data(referrer_id=referrer_id)
             await message.answer(
                 text="Iltimos to'liq ismingizni kiriting.",
                 reply_markup=ReplyKeyboardRemove(),

@@ -50,7 +50,6 @@ async def register_command(
 async def register_fullname_handler(message: Message, state: FSMContext, bot: Bot):
     try:
         await state.update_data(fullname=message.text)
-        print("fullname: ", message.text)
         await state.set_state(RegistrFormState.Phone)
         text = 'Iltimos "Nomerni yuborish" tugmasini bosing.'
         await message.answer(text=text, reply_markup=phonenumber_keyboard)
@@ -60,7 +59,7 @@ async def register_fullname_handler(message: Message, state: FSMContext, bot: Bo
 
 @register_router.message(PrivateFilter(), RegistrFormState.Phone)
 async def register_phone_form(
-    message: Message, state: FSMContext, user: User, repo: RequestsRepo, config: Config
+    message: Message, state: FSMContext, user: User, repo: RequestsRepo, config: Config, bot: Bot
 ):
     try:
         data = await state.update_data(phone=message.contact.phone_number.strip("+"))
@@ -82,5 +81,32 @@ async def register_phone_form(
                 else base_menu_keyboards(user.private_channel_link)
             ),
         )
+        referrer_id = data['referrer_id']
+        referrer = await repo.users.get_by_id(referrer_id) if referrer_id else None
+        if referrer:
+            try:
+                await repo.users.update_user(
+                    id=message.from_user.id,
+                    full_name=data["fullname"],
+                    phone=data["phone"],
+                    is_registered=True,
+                    private_channel_link=user.private_channel_link,
+                    referral_count=user.referral_count,
+                    referrer_id=referrer_id
+                )
+                await repo.users.update_user(
+                    referrer.user_id,
+                    referrer.full_name,
+                    referrer.phone,
+                    referrer.is_registered,
+                    private_channel_link=user.private_channel_link,
+                    referral_count=referrer.referral_count+1
+                )
+                await bot.send_message(
+                    referrer.user_id,
+                    text=f"🎉 Sizning havolangiz orqali yangi foydalanuvchi ro'yxatdan o'tdi.\nJami taklif qilinganlar soni: {referrer.referral_count}ta.",
+                )
+            except Exception as e:
+                pass
     except Exception as ex:
         logging.error(ex)

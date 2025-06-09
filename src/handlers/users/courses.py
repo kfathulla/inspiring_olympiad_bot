@@ -47,7 +47,8 @@ Ishtirokchilarga atalgan kitoblar va bonuslar, sovg’alar ham bor.
 
 👉🏻 <a href='https://t.me/{me.username}?start={user.user_id}'>Havola ustiga bosing</a> 👈🏻
 👉🏻 <a href='https://t.me/{me.username}?start={user.user_id}'>Havola ustiga bosing</a> 👈🏻
-👉🏻 <a href='https://t.me/{me.username}?start={user.user_id}'>Havola ustiga bosing</a> 👈🏻"""
+👉🏻 <a href='https://t.me/{me.username}?start={user.user_id}'>Havola ustiga bosing</a> 👈🏻""",
+disable_web_page_preview=True
         )
         
         await callback.message.answer(text="""Shartlar bilan toʻliq tanishamiz 📌

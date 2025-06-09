@@ -15,6 +15,7 @@ from fastapi.responses import JSONResponse
 from src.database.setup import create_session_pool, create_engine
 from src.middlewares.check_subscription import CheckSubscriptionMiddleware
 from src.middlewares.database import DatabaseMiddleware
+from src.middlewares.command_parse import CommandParseMiddleware
 from src.middlewares.config import ConfigMiddleware
 from src.config import load_config, Config
 from src.handlers import router_list
@@ -78,9 +79,10 @@ def register_global_middlewares(dp: Dispatcher, config: Config, session_pool=Non
     """
     middleware_types = [
         ConfigMiddleware(config),
-        DatabaseMiddleware(session_pool),
+        DatabaseMiddleware(session_pool)
     ]
 
+    dp.message.middleware(CommandParseMiddleware())
     for middleware_type in middleware_types:
         dp.message.outer_middleware(middleware_type)
         dp.callback_query.outer_middleware(middleware_type)

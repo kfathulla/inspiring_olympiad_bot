@@ -23,28 +23,14 @@ class DatabaseMiddleware(BaseMiddleware):
             repo = RequestsRepo(session)
             bot: Bot = data['bot']
             config: Config = data['config']
-            command: CommandObject = data.get("command")
-            referral_id = int(command.args) if command and command.args and command.args.isdigit() else None
-            referral_id = referral_id if referral_id != event.from_user.id else None
             user = await repo.users.get_by_id(event.from_user.id)
             if user is None:
-                referrer = await repo.users.get_by_id(referral_id) if referral_id else None
-                if referrer:
-                    await repo.users.update_user(referrer.user_id, referrer.full_name, referrer.phone, referrer.is_registered, referral_count=referrer.referral_count+1)
-                    try:
-                        await bot.send_message(
-                            referrer.user_id,
-                            text=f"🎉 Sizning havolangiz orqali yangi foydalanuvchi ro'yxatdan o'tdi.\nJami taklif qilinganlar soni: {referrer.referral_count}ta.",
-                        )
-                    except Exception as e:
-                        pass
                 event_user: User = data['event_from_user']             
                 user = await repo.users.get_or_create_user(
                     event.from_user.id,
                     f"{event.from_user.first_name} {event.from_user.last_name}", 
                     event_user.id,
-                    event.from_user.username,
-                    referrer.user_id if referrer else None
+                    event.from_user.username
                 )
 
             if user.private_channel_link is None:

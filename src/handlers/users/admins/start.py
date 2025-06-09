@@ -18,7 +18,7 @@ from src.database.models.users import User
 admin_start_router = Router()
 
 @admin_start_router.message(PrivateFilter(), AdminFilter(), CommandStart())
-async def user_start(message: Message, state: FSMContext, user: User, bot: Bot, repo: RequestsRepo):
+async def user_start(message: Message, state: FSMContext, user: User, bot: Bot, repo: RequestsRepo, command_args: str):
     try:     
         if user is None:                
             user = await repo.users.get_or_create_user(
@@ -30,7 +30,9 @@ async def user_start(message: Message, state: FSMContext, user: User, bot: Bot, 
         if user.is_registered == True:
             await message.answer(text="👋 Botga hush kelibsiz!\nQuyidagilardan birini tanlang! 👇", reply_markup=admin_base_menu_keyboards(user.private_channel_link))
         else:
+            referrer_id = int(command_args) if command_args and command_args and command_args.isdigit() else None
             await state.set_state(RegistrFormState.Fullname)
+            await state.update_data(referrer_id=referrer_id)
             await message.answer(text="Iltimos to'liq ismingizni kiriting.", reply_markup=ReplyKeyboardRemove())
     except Exception as ex:
         logging.error(ex)

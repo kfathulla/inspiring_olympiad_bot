@@ -61,11 +61,11 @@ class UserRepo(BaseRepo):
         result = await self.session.execute(select(User).where(User.telegram_id == chat_id))
         return result.scalar_one_or_none()
 
-    async def update_user(self, id, full_name, phone, is_registered, private_channel_link, referral_count=0):
+    async def update_user(self, id, full_name, phone, is_registered, private_channel_link, referral_count=0, referrer_id=None):
         stmt = (
             update(User)
             .where(User.user_id == id)
-            .values(full_name=full_name, phone=phone, is_registered=is_registered, private_channel_link=private_channel_link, referral_count=referral_count)
+            .values(full_name=full_name, phone=phone, is_registered=is_registered, private_channel_link=private_channel_link, referral_count=referral_count, referrer_id=referrer_id)
         )
         
         await self.session.execute(stmt)
