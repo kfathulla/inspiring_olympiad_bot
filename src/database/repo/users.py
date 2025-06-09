@@ -14,6 +14,7 @@ class UserRepo(BaseRepo):
         full_name: str,
         telegram_id: int,
         username: Optional[str] = None,
+        referrer_id: Optional[int] = None
     ):
         """
         Creates or updates a new user in the database and returns the user object.
@@ -30,7 +31,8 @@ class UserRepo(BaseRepo):
                 user_id=user_id,
                 username=username,
                 full_name=full_name,
-                telegram_id=telegram_id
+                telegram_id=telegram_id,
+                referrer_id=referrer_id
             )
             .on_conflict_do_update(
                 index_elements=[User.user_id],
@@ -59,11 +61,11 @@ class UserRepo(BaseRepo):
         result = await self.session.execute(select(User).where(User.telegram_id == chat_id))
         return result.scalar_one_or_none()
 
-    async def update_user(self, id, full_name, phone, is_registered, private_channel_link):
+    async def update_user(self, id, full_name, phone, is_registered, private_channel_link, referral_count=0):
         stmt = (
             update(User)
             .where(User.user_id == id)
-            .values(full_name=full_name, phone=phone, is_registered=is_registered, private_channel_link=private_channel_link)
+            .values(full_name=full_name, phone=phone, is_registered=is_registered, private_channel_link=private_channel_link, referral_count=referral_count)
         )
         
         await self.session.execute(stmt)

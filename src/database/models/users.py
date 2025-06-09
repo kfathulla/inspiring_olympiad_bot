@@ -39,6 +39,8 @@ class User(Base, TimestampMixin, TableNameMixin):
     telegram_id: Mapped[int] = mapped_column(BIGINT, unique=True)
 
     private_channel_link: Mapped[str] = mapped_column(String(128), nullable=True)
+    referrer_id: Mapped[Optional[int]] = mapped_column(BIGINT, nullable=True)
+    referral_count: Mapped[int] = mapped_column(BIGINT, server_default=text("0"))
 
     tests = relationship("Test", back_populates="user", lazy="noload")
     submissions = relationship("Submission", back_populates="user", lazy="noload")

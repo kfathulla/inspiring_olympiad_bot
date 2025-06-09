@@ -6,18 +6,13 @@ def admin_base_menu_keyboards(private_channel_link):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="🥇 May olimpiadasi", callback_data="olympiad/may"
-                )
-            ],
-            [
-                InlineKeyboardButton(
                     text="📚 SAT Math marafon 10", callback_data="sat_course/info"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="🎓 Grandlar olimpiadasi 20 MILLION",
-                    callback_data="olympiad/grands",
+                    text="🎓 Mini kurs",
+                    callback_data="courses/mini_course",
                 )
             ],
             # [
@@ -46,18 +41,13 @@ def base_menu_keyboards(private_channel_link):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text="🥇 May olimpiadasi", callback_data="olympiad/may"
-                )
-            ],
-            [
-                InlineKeyboardButton(
                     text="📚 SAT Math marafon 10", callback_data="sat_course/info"
                 )
             ],
             [
                 InlineKeyboardButton(
-                    text="🎓 Grandlar olimpiadasi 20 MILLION",
-                    callback_data="olympiad/grands",
+                    text="🎓 Mini kurs",
+                    callback_data="courses/mini_course",
                 )
             ],
             # [

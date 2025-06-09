@@ -70,6 +70,7 @@ async def register_phone_form(
             phone=data["phone"],
             is_registered=True,
             private_channel_link=user.private_channel_link,
+            referral_count=user.referral_count
         )
         await state.clear()
         await message.answer(text="Tabriklaymiz siz muvaffaqiyatli ro'yhatdan o'tdingiz.", reply_markup=ReplyKeyboardRemove())

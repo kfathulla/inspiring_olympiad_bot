@@ -28,7 +28,7 @@ async def user_start(message: Message, state: FSMContext, bot: Bot, repo: Reques
                 message.from_user.username or uuid.uuid4().__str__(),
             )
 
-        if user.is_registered == True:
+        if user.is_registered == True:                
             await message.answer(
                 text="👋 Botga hush kelibsiz!\nQuyidagi o'zingizga kerakli tugmani bosing",
                 reply_markup=base_menu_keyboards(user.private_channel_link),

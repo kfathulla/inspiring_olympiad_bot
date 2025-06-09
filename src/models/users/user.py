@@ -7,6 +7,8 @@ class User:
     first_name: str | None
     last_name: str | None
     phone_number: str | None
+    referrer_id: int | None
+    referral_count: int = 0
     telegram_id: int
     created_datetime: datetime.datetime | None
     updated_datetime: datetime.datetime | None
