@@ -18,7 +18,19 @@ courses_router = Router()
 async def intensive_course(callback: CallbackQuery, user: User, config: Config):
     try:
         await callback.message.answer(
-            text="Mini kurs haqida ma'lumot tez orada joylanadi.",
+            text="""⚡️ BEPUL INTENSIV 1.0 KURSi ga xush kelibsiz!
+
+❗️Diqqat bilan o’qing! 
+
+Loyihada ishtirok etish 100% bepul. Faqat, biz tashkil qilayotgan loyiha ko'pchilikka yetib borishi uchun sizning yordamingiz kerak bo'ladi!
+
+Bot sizga maxsus link beradi — 3 nafar do‘stingizni shu link orqali taklif qiling. Ular botga kirib ro‘yxatdan o‘tsa, sizga +1 ball beriladi.
+
+3 ball to‘plaganlar yopiq kanalga qo‘shilib,  10 kun davomida sizlar Milliy Sertifikat, Attestatsiya, DTM va SAT MATH dan natijaga qaratilgan maxsus darslar olib boriladi. 
+
+Keling birga foydali ilm tarqatishni boshlaylik , zero ilm yoyish ham bir baxtdir. 
+
+Quyidagi tugmani bosing va taklif qilishni boshlang 👇""",
             reply_markup=mini_course_menu_keyboards(user.private_channel_link)
         )
         await callback.answer()
@@ -33,15 +45,18 @@ async def intensive_course_referral_post(callback: CallbackQuery, user: User, co
     try:
         me = await bot.get_me()
         await callback.message.answer(
-            text=f"""🎉 “Mini kurs”da kimlar va nimalar bo'lishini bilasizmi…
+            text=f"""🎉 “INTENSIV 1.0 KURS”da kimlar va nimalar bo'lishini bilasizmi…
 
-Prezident Maktabida 79ta, Al-Xorazmiy maktabiga 29ta va Ixtisoslashtirilgan maktablarga 300+ o'quvchilari kirgan ustozlar.
+50 dan ortiq Xalqaro Olimpiadachilar , 10.000 da ortiq baxtli talabalar va juda kuchli matematiklar hamda 30 yildan ortiq tajribaga ega Ustozlar tomonidan olib boriladi .
 
-😌"Mini kurs" nomli imtihon formatiga asoslangan 1 haftalik BEPUL kursda aynan mana shu maktablar imtihonida eng ko'p tushadigna masalalar haqida darslar bo'ladi. 
+😌" INTENSIV 1.0 KURS " nomli imtihon formatiga asoslangan 10 kunlik BEPUL kursda aynan mana shu MILLIY SERTIFIKAT, ATTESTATSIYA, DTM va SAT MATH imtihonida eng ko'p tushadigna masalalar haqida darslar bo'ladi. 
 
-✅ Tanqidiy Fikrlash, Mantiqiy Masalalar va Ingliz tili — aslida qiyin emas!
+✅ MILLIY SERTIFIKAT A+      
+ATTESTATSIYA 85/100
+DTM 30/30
+SAT MATH 800/800 — aslida qiyin emas!
 
-Ishtirokchilarga atalgan kitoblar va bonuslar, sovg’alar ham bor.
+Ishtirokchilarga atalgan kitoblar va bonuslar, sovg’alar hamda pul mukofotlari ham bor.
 
 👇Ishtirok etish uchun:
 
@@ -53,13 +68,13 @@ disable_web_page_preview=True
         
         await callback.message.answer(text="""Shartlar bilan toʻliq tanishamiz 📌
 
-Prezident, Al-Xorazmiy va ixtisoslashgan maktabga tayyorgarlik ko'rayotgan tanishingizni taklif qilishingiz kerak
+MILLIY SERTIFIKAT , ATTESTATSIYA, DTM va SAT MATH ga tayyorgarlik ko'rayotgan tanishingizni taklif qilishingiz kerak
     
-❗️ Bot sizning uchun alohida taklif havolasi beradi va siz eng kamida 5-ta doʻstingizni taklif qilasiz va siz "Mini Kurs"da qatnasha olasiz
+❗️ Bot sizning uchun alohida taklif havolasi beradi va siz eng kamida 3-ta doʻstingizni taklif qilasiz va siz "INTENSIV 1.0 KURS"da qatnasha olasiz
     
- — Chiqib ketishlarni oldini olish uchun 5tadan koʻproq odam taklif qilishni maslahat beraman 😉
+ — Chiqib ketishlarni oldini olish uchun 3 tadan koʻproq odam taklif qilishni maslahat beraman 😉
 
-Bepul kurs, Planshet, sovg'alar va bonuslar osongina shartga arziydi 💯
+Bepul kurs, Planshet,kitoblar,  sovg'alar va bonuslar osongina shartga arziydi 💯
 
 Tayyor boʻlsangiz hoziroq yuqoridagi postni tarqatib do'stlarni taklif qilishni boshlang."""
 )
