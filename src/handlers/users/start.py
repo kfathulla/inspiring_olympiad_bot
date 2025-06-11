@@ -46,7 +46,7 @@ async def user_start(message: Message, state: FSMContext, bot: Bot, repo: Reques
         logging.error(ex)
 
 
-@start_router.callback_query(PrivateFilter(), F.data == "check_subs")
+@start_router.callback_query(PrivateFilter(), CheckSubCallback.filter())
 async def check_subs(
     call: CallbackQuery, callback_data: CheckSubCallback, state: FSMContext, bot: Bot, config: Config, repo: RequestsRepo
 ):
