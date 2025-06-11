@@ -8,6 +8,7 @@ from aiogram.types import TelegramObject, User, Message, CallbackQuery
 from aiogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 from src.keyboards.inline.subscription import check_button
+from src.filters.callback.check_sub import CheckSubCallback
 from src.config import Config
 from src.utils.misc import subscription
 
@@ -69,10 +70,12 @@ Botimizdan to'liq foydalanishingiz uchun quyidagi kanallarimizga a'zo bo'ling.""
                 )
 
         if not is_subscribed:
+            command_args = data.get("command_args", None)
+            referrer_id = int(command_args) if command_args and command_args and command_args.isdigit() else None
             check_button.inline_keyboard.append(
                 [
                     InlineKeyboardButton(
-                        text="✅ A'zo bo'ldim", callback_data="check_subs"
+                        text="✅ A'zo bo'ldim", callback_data=CheckSubCallback(referrer_id=referrer_id).pack()
                     )
                 ]
             )
