@@ -184,6 +184,7 @@ class Config:
     misc: Miscellaneous
     db: Optional[DbConfig] = None
     redis: Optional[RedisConfig] = None
+    jwt: Optional[str] = None
 
 
 def load_config(path: str = None) -> Config:
@@ -203,4 +204,5 @@ def load_config(path: str = None) -> Config:
         tg_bot=TgBot.from_env(env),
         db=DbConfig.from_env(env),
         redis=RedisConfig.from_env(env),
-        misc=Miscellaneous.from_env(env))
+        misc=Miscellaneous.from_env(env),
+        jwt=env.str("JWT_SECRET"))

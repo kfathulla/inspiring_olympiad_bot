@@ -4,7 +4,7 @@ import uuid
 from aiogram import Router, F, Bot
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 
 from src.config import Config
 from src.database.repo.requests import RequestsRepo
@@ -16,6 +16,42 @@ from src.states.registr_form import RegistrFormState
 
 start_router = Router()
 
+async def send_books(bot: Bot, message: Message):
+    await bot.forward_message(
+        chat_id=message.from_user.id,
+        from_chat_id="@hasantuyliyev",
+        message_id=820,
+    )
+    
+    await bot.forward_message(
+        chat_id=message.from_user.id,
+        from_chat_id="@hasantuyliyev",
+        message_id=823,
+    )
+    
+    await bot.forward_message(
+        chat_id=message.from_user.id,
+        from_chat_id="@hasantuyliyev",
+        message_id=824,
+    )
+    
+    await bot.forward_message(
+        chat_id=message.from_user.id,
+        from_chat_id="@hasantuyliyev",
+        message_id=825,
+    )
+
+@start_router.message(
+    PrivateFilter(),
+    Command(commands=["books"]))
+async def send_books_handler(message: Message, bot: Bot):
+    await send_books(bot, message)
+
+@start_router.message(
+    PrivateFilter(),
+    CommandStart(F.command.args == "books"))
+async def start_books_handler(message: Message, bot: Bot):
+    await send_books(bot, message)
 
 @start_router.message(PrivateFilter(), CommandStart())
 async def user_start(message: Message, state: FSMContext, bot: Bot, repo: RequestsRepo, command_args: str):

@@ -17,8 +17,9 @@ class Test(Base, TimestampMixin, TableNameMixin):
     is_show_incorrects: Mapped[bool] = mapped_column(Boolean, server_default=false())
     is_show_answers: Mapped[bool] = mapped_column(Boolean, server_default=false())
     is_finished: Mapped[bool] = mapped_column(Boolean, server_default=false())
-    
     finished_at: Mapped[datetime] = mapped_column(TIMESTAMP, server_default=func.now())
+    
+    is_public: Mapped[bool] = mapped_column(Boolean, server_default=false())
 
     answers = relationship('TestAnswer', back_populates='test', lazy="noload")
     submissions = relationship('Submission', back_populates='test', lazy="noload")

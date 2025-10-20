@@ -14,7 +14,7 @@ class TestAnswer(Base, TimestampMixin, TableNameMixin):
     id: Mapped[int] = mapped_column(BIGINT, primary_key=True, autoincrement=True)
     order: Mapped[int] = mapped_column(Integer, default=0)
     text: Mapped[Optional[str]] = mapped_column(String(128))
-    type: Mapped[int] = mapped_column(Integer, default=0) # 0 - ochiq test javobi, 1 - yopiq test javobi
+    type: Mapped[int] = mapped_column(Integer, default=0) # 0 - yopiq test javobi, 1 - ochiq test javobi
     score: Mapped[float] = mapped_column(Numeric(precision=3, scale=2), default=0)
 
     test_id: Mapped[int] = mapped_column(ForeignKey("tests.id"), nullable=False)
